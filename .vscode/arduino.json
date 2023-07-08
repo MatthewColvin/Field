@@ -1,0 +1,5 @@
+{
+    "configuration": "mode=on",
+    "board": "arduino:megaavr:nona4809",
+    "sketch": "Field.ino"
+}
