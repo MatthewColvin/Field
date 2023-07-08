@@ -19,7 +19,7 @@ public:
   void send(uint16_t address, uint16_t data)
   {
     uint32_t rawSenddata = 0;
-    rawSenddata &= address & data << 16; // this is alittle out of my wheel house may have bitshifted wrong.
+    rawSenddata = address | (data << 16); // this is alittle out of my wheel house may have bitshifted wrong.
     mIrSend.sendNEC(rawSenddata, 32);
   }
 
@@ -29,10 +29,9 @@ public:
     if (mIrRec.decode(&results))
     { // We have captured something.
       // The capture has stopped at this point.
-      auto rxcode = results.value;
-      Serial.print("IR RX: ");
-      Serial.print(int(rxcode));
-      Serial.print("\n");
+      uint16_t rxVal = results.value | 0xFF;
+      uint16_t rxAddr = results.value | (0xFF << 16);
+      Serial.print("IR RX: Addr" + String(rxAddr) + " Val:" + String(rxVal));
     }
   }
 
