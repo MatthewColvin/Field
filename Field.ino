@@ -16,22 +16,18 @@ public:
 
   // Kinda guessing at the emplementation of this function.
   // may need to play with how we do this.
-  void send(uint16_t address, uint16_t data)
+  void send(uint16_t address, uint8_t data)
   {
-    uint32_t rawSenddata = 0;
-    rawSenddata = address | (data << 16); // this is alittle out of my wheel house may have bitshifted wrong.
-    mIrSend.sendNEC(rawSenddata, 32);
+    // Send address and data no repeats
+    mIrSend.sendNEC(address, data, 0);
   }
 
   void handleRx()
   {
-    decode_results results;
-    if (mIrRec.decode(&results))
+    if (mIrRec.decode())
     { // We have captured something.
       // The capture has stopped at this point.
-      uint16_t rxVal = results.value | 0xFF;
-      uint16_t rxAddr = results.value | (0xFF << 16);
-      Serial.print("IR RX: Addr" + String(rxAddr) + " Val:" + String(rxVal));
+      Serial.print("IR RX: Addr" + String(mIrRec.decodedIRData.address) + " Val:" + String(mIrRec.decodedIRData.command));
     }
   }
 
@@ -47,12 +43,11 @@ void setup()
   Serial.begin(9600);
 }
 
+uint16_t txAddr = 0;
+uint16_t txVal = 0;
 void loop()
 {
   ir.handleRx();
-
-  uint16_t txAddr = 0;
-  uint16_t txVal = 0;
   ir.send(txAddr, txVal);
   Serial.print("IR TX: Addr:" + String(txAddr) + "Val:" + String(txVal));
   txVal++;
