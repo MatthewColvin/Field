@@ -1,5 +1,7 @@
 {
-    "configuration": "mode=on",
-    "board": "arduino:megaavr:nona4809",
-    "sketch": "Field.ino"
+    "board": "arduino:avr:nano",
+    "sketch": "Field.ino",
+    "programmer": "usbasp",
+    "port": "COM5",
+    "configuration": "cpu=atmega328"
 }
